@@ -25,7 +25,11 @@ classifiers = [
 
 dependencies = [
     "streamlit == 1.50.0",
-    "pydantic ~= 2.11"
+    "pydantic ~= 2.11",
+    "pandas ~= 2.0",
+    "numpy >= 1.24",
+    "scikit-learn >= 1.3",
+    "pathlib2 >= 2.3"
 ]
 
 [project.optional-dependencies]
@@ -54,6 +58,11 @@ where = ["src"]
 [tool.black]
 line-length = 120
 target-version = ['py312']
+
+# Flake8 configuration
+[tool.flake8]
+max-line-length = 120
+extend-ignore = ["E203", "W503"]
 
 # pytest configuration
 [tool.pytest.ini_options]

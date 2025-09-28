@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-Run the Shopping Assistant Streamlit App
-
-This script launches the Streamlit web interface for the AI shopping assistant.
+Run the enhanced shopping assistant with product indexing.
 """
 
 import subprocess
@@ -11,32 +9,33 @@ from pathlib import Path
 
 
 def main():
-    """Launch the Streamlit app."""
-    # Get the path to the app.py file
-    app_path = Path(__file__).parent / "shopping_assistant" / "app.py"
+    """Run the enhanced Streamlit app."""
+    project_root = Path(__file__).parent
+    app_path = project_root / "src" / "shopping_assistant" / "app.py"
+
+    # Get the Python executable path
+    venv_python = project_root / ".venv" / "bin" / "python"
+
+    if not venv_python.exists():
+        print("❌ Virtual environment not found. Please run devenv.sh to set up the environment.")
+        sys.exit(1)
+
+    if not app_path.exists():
+        print(f"❌ App file not found: {app_path}")
+        sys.exit(1)
+
+    print("🚀 Starting Enhanced Shopping Assistant...")
+    print("📱 App will open in your browser at http://localhost:8501")
+
+    # Run streamlit
+    cmd = [str(venv_python), "-m", "streamlit", "run", str(app_path)]
 
     try:
-        # Run streamlit with the app
-        subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "streamlit",
-                "run",
-                str(app_path),
-                "--server.address",
-                "localhost",
-                "--server.port",
-                "8501",
-            ],
-            check=True,
-        )
-    except subprocess.CalledProcessError as e:
-        print(f"Error running Streamlit app: {e}")
-        sys.exit(1)
+        subprocess.run(cmd, cwd=str(project_root))
     except KeyboardInterrupt:
-        print("\nApp stopped by user")
-        sys.exit(0)
+        print("\n👋 Shopping Assistant stopped.")
+    except Exception as e:
+        print(f"❌ Error running app: {e}")
 
 
 if __name__ == "__main__":

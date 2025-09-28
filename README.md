@@ -54,3 +54,11 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
 4. **Start the Streamlit app:**
    ```bash
    streamlit run src/shopping_assistant/app.py
+
+## 📊 Dataset
+
+The demo uses a fashion e-commerce dataset sourced from:
+- **Source**: [Kaggle - E-commerce Fashion Dataset](https://www.kaggle.com/code/tabassumbano/ecommerce-fashion-dataset/)
+- **Contents**: ~3,000 fashion items with attributes like brand, price, sizes, categories, and discounts
+
+*Note: This dataset is used for demonstration purposes only.*

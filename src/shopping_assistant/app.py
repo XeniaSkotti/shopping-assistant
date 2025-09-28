@@ -1,12 +1,84 @@
 """
-Streamlit Shopping Assistant App
-
-A web interface for the AI-powered shopping assistant with chat functionality.
+Simple Fashion Shopping Assistant Chat Interface
 """
 
 import streamlit as st
-import time
-from typing import Dict, Any
+from typing import Dict, Any, List
+from pathlib import Path
+import sys
+
+# Add src to path for imports
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root / "src"))
+
+try:
+    from shopping_assistant.indexing import SearchEngine
+
+    INDEXING_AVAILABLE = True
+except ImportError:
+    INDEXING_AVAILABLE = False
+    st.error("Indexing system not available. Please install required dependencies.")
+
+
+class ShoppingAssistant:
+    """Simple shopping assistant with product search capabilities."""
+
+    def __init__(self):
+        """Initialize the shopping assistant."""
+        self.search_engine = None
+        self.is_initialized = False
+
+        if INDEXING_AVAILABLE:
+            self._initialize_search_engine()
+
+    def _initialize_search_engine(self):
+        """Initialize the search engine."""
+        try:
+            data_path = project_root / "data" / "FashionDataset.csv"
+            index_path = project_root / "data" / "product_index.pkl"
+
+            self.search_engine = SearchEngine()
+            currency_rate = 0.0095
+
+            self.search_engine.load_from_saved_index(str(index_path), str(data_path), currency_rate)
+            self.is_initialized = True
+
+        except Exception as e:
+            st.error(f"Failed to initialize search engine: {e}")
+            self.is_initialized = False
+
+    def search_products(self, query: str) -> List[Dict]:
+        """Search for products using the query."""
+        if not self.is_initialized:
+            return []
+
+        try:
+            results = self.search_engine.smart_search(query, top_k=10)
+            return results
+        except Exception as e:
+            st.error(f"Search error: {e}")
+            return []
+
+    def get_trending_products(self) -> List[Dict]:
+        """Get trending products."""
+        if not self.is_initialized:
+            return []
+
+        try:
+            return self.search_engine.get_trending_products(limit=5)
+        except Exception as e:
+            st.error(f"Error getting trending products: {e}")
+            return []
+
+    def get_categories(self) -> List[str]:
+        """Get available categories."""
+        if not self.is_initialized:
+            return []
+
+        try:
+            return self.search_engine.get_categories()
+        except Exception:
+            return []
 
 
 def initialize_session_state() -> None:
@@ -15,88 +87,72 @@ def initialize_session_state() -> None:
         st.session_state.messages = [
             {
                 "role": "assistant",
-                "content": (
-                    "👋 Hi! I'm your AI shopping assistant. I can help you find"
-                    "products, compare prices, and make recommendations. "
-                    "What are you looking for today?"
-                ),
+                "content": ("👋 Hi! I'm your AI shopping assistant. " "What fashion items are you looking for today?"),
             }
         ]
 
+    if "assistant" not in st.session_state:
+        st.session_state.assistant = ShoppingAssistant()
 
-def generate_dummy_response(user_input: str) -> str:
-    """Generate a dummy response based on user input."""
-    # Simple keyword-based dummy responses
+
+def generate_ai_response(user_input: str) -> str:
+    """Generate AI response with product search."""
+    assistant = st.session_state.assistant
+
+    if not assistant.is_initialized:
+        return "Sorry, I can't access the product database right now."
+
     user_lower = user_input.lower()
+    if any(word in user_lower for word in ["trending", "popular", "hot"]):
+        trending = assistant.get_trending_products()
+        if trending:
+            response = "🔥 **Trending Products Right Now:**\n\n"
+            for i, product in enumerate(trending, 1):
+                brand = product.get("BrandName", "Unknown Brand").title()
+                price = product.get("SellPrice_numeric", 0)
+                details = product.get("Deatils", "No details available")
+                if len(details) > 60:
+                    details = details[:60] + "..."
+                response += f"**{i}. {brand}** - £{price:.2f}\n{details}\n\n"
+            return response
+        else:
+            return "I couldn't fetch trending products right now. Please try again."
 
-    if any(word in user_lower for word in ["laptop", "computer", "macbook"]):
-        return (
-            "🖥️ I found some great laptop options for you! "
-            "Here are some popular choices:\n\n"
-            "1. **MacBook Air M3** - $1,199\n"
-            "   - 13-inch display, 8GB RAM, 256GB SSD\n"
-            "   - Perfect for everyday tasks and portability\n\n"
-            "2. **Dell XPS 13** - $999\n"
-            "   - 13.4-inch display, 16GB RAM, 512GB SSD\n"
-            "   - Great Windows alternative with premium build\n\n"
-            "Would you like more details about any of these options?"
-        )
-
-    elif any(word in user_lower for word in ["phone", "smartphone", "iphone", "android"]):
-        return (
-            "📱 Here are some excellent smartphone recommendations:\n\n"
-            "1. **iPhone 15 Pro** - $999\n"
-            "   - 6.1-inch display, A17 Pro chip, 128GB\n"
-            "   - Excellent camera and build quality\n\n"
-            "2. **Samsung Galaxy S24** - $799\n"
-            "   - 6.2-inch display, Snapdragon 8 Gen 3, 256GB\n"
-            "   - Great Android experience with S Pen support\n\n"
-            "What's your budget and preferred operating system?"
-        )
-
-    elif any(word in user_lower for word in ["headphones", "earbuds", "audio"]):
-        return (
-            "🎧 I've found some amazing audio options:\n\n"
-            "1. **AirPods Pro (2nd gen)** - $249\n"
-            "   - Active noise cancellation, spatial audio\n"
-            "   - Perfect for Apple ecosystem users\n\n"
-            "2. **Sony WH-1000XM5** - $399\n"
-            "   - Industry-leading noise cancellation\n"
-            "   - 30-hour battery life\n\n"
-            "Are you looking for wireless earbuds or over-ear headphones?"
-        )
-
-    elif any(word in user_lower for word in ["budget", "cheap", "affordable", "price"]):
-        return (
-            "💰 I understand you're looking for budget-friendly options! "
-            "I can help you find great deals. What's your budget range and "
-            "what type of product are you interested in?"
-        )
-
-    elif any(word in user_lower for word in ["compare", "vs", "difference"]):
-        return (
-            "🔍 I'd be happy to help you compare products! Please let me know "
-            "which specific items you'd like me to compare, and I'll break down "
-            "the key differences for you."
-        )
+    elif any(word in user_lower for word in ["categories", "category", "browse"]):
+        categories = assistant.get_categories()
+        if categories:
+            response = "🏷️ Here are our available categories:\n\n"
+            response += ", ".join(categories)
+            response += "\n\nJust tell me which category you're interested in!"
+            return response
 
     else:
-        return (
-            f"🤔 I understand you're interested in '{user_input}'. "
-            "Let me search for the best options for you!\n\n"
-            "Here's what I can help you with:\n"
-            "• Product recommendations and reviews\n"
-            "• Price comparisons across retailers\n"
-            "• Feature breakdowns and specifications\n"
-            "• Budget-friendly alternatives\n\n"
-            "Could you provide a bit more detail about what you're looking for? "
-            "For example, your budget range or specific features that matter "
-            "to you?"
-        )
+        # Perform product search
+        products = assistant.search_products(user_input)
+
+        if products:
+            response = f"🔍 **Found {len(products)} products for '{user_input}':**\n\n"
+            for i, product in enumerate(products[:5], 1):  # Show top 5 results
+                brand = product.get("BrandName", "Unknown Brand").title()
+                price = product.get("SellPrice_numeric", 0)
+                details = product.get("Deatils", "No details available")
+                category = product.get("Category", "Unknown Category")
+                if len(details) > 60:
+                    details = details[:60] + "..."
+                response += f"**{i}. {brand}** - £{price:.2f}\n*{category}*\n{details}\n\n"
+
+            if len(products) > 5:
+                response += f"*...and {len(products) - 5} more results available!*"
+            return response
+        else:
+            return (
+                f"I couldn't find any products matching '{user_input}'. "
+                "Try different keywords like 'dress', 'jeans', 'cotton top', etc."
+            )
 
 
 def display_chat_message(message: Dict[str, Any]) -> None:
-    """Display a chat message with appropriate styling."""
+    """Display a chat message."""
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
@@ -105,74 +161,43 @@ def main():
     """Main Streamlit app."""
     # Page configuration
     st.set_page_config(
-        page_title="AI Shopping Assistant",
-        page_icon="🛒",
-        layout="wide",
-        initial_sidebar_state="collapsed",
+        page_title="AI Fashion Shopping Assistant",
+        page_icon="👗",
+        layout="centered",
     )
 
     # Initialize session state
     initialize_session_state()
 
     # App header
-    st.title("🛒 AI Shopping Assistant")
-    st.markdown("*Find the perfect products with AI-powered recommendations*")
+    st.title("👗 AI Fashion Shopping Assistant")
+    st.markdown("*Chat with your AI shopping assistant to find fashion products*")
 
-    # Sidebar with app info
-    with st.sidebar:
-        st.header("About")
-        st.markdown(
-            """
-        This AI shopping assistant helps you:
-        - 🔍 Find products based on your needs
-        - 💰 Compare prices across retailers
-        - ⭐ Get personalized recommendations
-        - 📊 Understand product specifications
-        """
-        )
+    # Display chat messages
+    for message in st.session_state.messages:
+        display_chat_message(message)
 
-        st.header("Tips")
-        st.markdown(
-            """
-        Try asking:
-        - "I need a laptop for programming"
-        - "Compare iPhone vs Samsung phones"
-        - "Best budget headphones under $100"
-        - "Gaming laptop recommendations"
-        """
-        )
+    # Chat input with clear button
+    col1, col2 = st.columns([4, 1])
 
-        if st.button("🗑️ Clear Chat"):
-            st.session_state.messages = [st.session_state.messages[0]]  # Keep welcome message
+    with col1:
+        prompt = st.chat_input("Ask me about fashion products...")
+
+    with col2:
+        if st.button("🗑️ Clear Chat", use_container_width=True):
+            st.session_state.messages = [st.session_state.messages[0]]
             st.rerun()
 
-    # Chat interface
-    chat_container = st.container()
-
-    with chat_container:
-        # Display existing messages
-        for message in st.session_state.messages:
-            display_chat_message(message)
-
-    # Chat input
-    if prompt := st.chat_input("Ask me about any product you're looking for..."):
+    if prompt:
         # Add user message to chat
         st.session_state.messages.append({"role": "user", "content": prompt})
 
-        # Display user message
-        with st.chat_message("user"):
-            st.markdown(prompt)
+        # Generate and add assistant response
+        with st.spinner("Searching products..."):
+            response = generate_ai_response(prompt)
+            st.session_state.messages.append({"role": "assistant", "content": response})
 
-        # Generate and display assistant response
-        with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
-                # Simulate processing time
-                time.sleep(1)
-                response = generate_dummy_response(prompt)
-                st.markdown(response)
-
-        # Add assistant response to session state
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        st.rerun()
 
 
 if __name__ == "__main__":
