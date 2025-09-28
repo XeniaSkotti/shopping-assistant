@@ -1,35 +1,56 @@
-# 🛍️ AI Shopping Assistant  
+# 🛍️ AI Shopping Assistant
 
-An **AI-powered shopping assistant** that helps users discover products based on natural language queries.  
-The system demonstrates how to build an **enterprise-grade, agentic AI application** with retrieval, planning, observability, and governance features—without requiring a live cloud deployment.  
+An end-to-end prototype of a conversational shopping assistant.
+Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM can help users find products based on natural-language queries, while staying grounded in structured catalog data.
 
-Example query:  
+---
 
-> “lightweight waterproof hiking jacket under £150, UK stock, eco-friendly brands”  
+## ✨ Features
 
-The assistant:  
-1. Parses the request into structured constraints (category, price, region, brand features).  
-2. Plans a tool-calling sequence (internal DB, external API).  
-3. Retrieves and normalizes product data.  
-4. Ranks results by relevance, constraints, availability, and diversity.  
-5. Returns explainable recommendations with evidence and audit trail.
+- **Conversational search**
+  Ask questions like:
+  *“Looking for a waterproof hiking jacket under £180, UK stock, sustainable brand.”*
 
-## 🏗️ Repository Structure
+- **Hybrid retrieval**
+  Combines lexical filtering (DuckDB) and semantic similarity search (LanceDB/Chroma).
 
-```
-shopping-assistant/
-├── services/              # Backend services
-│   ├── core/             # Core orchestration service
-│   ├── retrieval/        # Product data retrieval
-│   ├── planning/         # AI planning and tool selection
-│   ├── ranking/          # Product ranking algorithms
-│   └── data/             # Data models and persistence
-├── ui/                   # User interfaces
-│   └── streamlit_app/    # Streamlit web application
-├── infra/                # Infrastructure and deployment
-│   ├── docker/           # Docker configurations
-│   ├── k8s/              # Kubernetes manifests
-│   ├── terraform/        # Infrastructure as Code
-│   └── scripts/          # Deployment scripts
-└── eval/                 # Evaluation and testing
-```
+- **Constraint handling**
+  Filters by price, brand, size, region, and sustainability flags via an LLM intent parser.
+
+- **Grounded answers with citations**
+  Every product card includes explicit attributes and source references.
+
+- **Guardrails-lite**
+  Restricted items (e.g. weapons, meds) are blocked. Numeric fields (price, rating) come directly from the catalog.
+
+- **Diagnostics tab**
+  Simple metrics dashboard: latency, recall@k, groundedness rate.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- **Python 3.11+** (tested with 3.13)
+- Git
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/XeniaSkotti/shopping-assistant.git
+   cd shopping-assistant
+   ```
+
+2. **Run the setup script:**
+   ```bash
+   chmod +x scripts/devenv.sh
+   ./scripts/devenv.sh
+   ```
+
+3. **Activate the environment:**
+   ```bash
+   source venv/bin/activate
+   ```
+
+4. **Start the Streamlit app:**
+   ```bash
+   streamlit run src/shopping_assistant/app.py
