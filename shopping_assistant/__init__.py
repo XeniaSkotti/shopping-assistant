@@ -10,6 +10,6 @@ __author__ = "Xenia Skotti"
 __email__ = "xeniaskotti@gmail.com"
 
 # Import main components
-from .app import main as run_app
+from .preprocessor import DataPreprocessor
 
-__all__ = ["run_app"]
+__all__ = ["DataPreprocessor"]

@@ -16,18 +16,18 @@ fi
 
 # Activate virtual environment
 echo "🔧 Activating virtual environment..."
-source venv/bin/activate
+source .venv/bin/activate
 
 # Upgrade pip
 echo "⬆️ Upgrading pip..."
 pip install --upgrade pip
 
-# Install the package with dev and test dependencies
-echo "📥 Installing dependencies..."
-pip install -e ".[dev,test]"
+# Install the package with all optional dependencies
+echo "📥 Installing dependencies (including notebook tools)..."
+pip install -e ".[dev,test,notebooks]"
 
 # Install pre-commit hooks
 echo "🪝 Setting up pre-commit hooks..."
 pre-commit install
 
-echo "✅ Setup complete! Run 'source venv/bin/activate' to activate the environment."
+echo "✅ Setup complete! Run 'source .venv/bin/activate' to activate the environment."
