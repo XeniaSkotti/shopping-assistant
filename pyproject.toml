@@ -50,14 +50,18 @@ test = [
 
 notebooks = [
     "jupyter",
-    "ipykernel"
+    "ipykernel",
+    "matplotlib",
+    "seaborn",
+    "ipython"
 ]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
+include = ["shopping_assistant*"]
 
 [tool.setuptools.package-dir]
-"" = "src"
+"" = "."
 
 # Black configuration
 [tool.black]
