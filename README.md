@@ -14,7 +14,7 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
   *"Looking for a waterproof hiking jacket under £180, UK stock, sustainable brand."*
 
 - **Hybrid retrieval**
-  Combines lexical filtering (DuckDB) and semantic similarity search (LanceDB/Chroma).
+  Combines lexical filtering (SQLite) and semantic similarity search (FAISS/Chroma planned).
 
 - **Constraint handling**
   Filters by price, brand, size, region, and sustainability flags via an LLM intent parser.
@@ -34,6 +34,7 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
 - ✅ Data preprocessing pipeline (`DataPreprocessor`)
 - ✅ Basic project structure and dependencies
 - ✅ Exploratory data analysis (EDA)
+- ✅ SQLite schema + ingestion script (1k sample products loaded)
 
 **In development:**
 - 🚧 Streamlit UI
@@ -42,7 +43,6 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
 
 **Planned:**
 - 📋 Hybrid search (lexical + semantic)
-- 📋 Intent parsing and constraint handling
 - 📋 Guardrails and safety measures
 - 📋 Performance metrics and diagnostics
 
@@ -98,9 +98,20 @@ Takeaway: core clothing categories (apparel + footwear) are clean and query-frie
 
 *Note: This dataset is used for demonstration purposes only.*
 
+## 🗄️ Ingest Data into SQLite
+
+Before running search or UI features, you need to load the product data into the database:
+
+```bash
+python shopping_assistant/ingest_sqlite.py --csv data/FashionDataset.csv --sample 1000
+```
+
+- This command processes the CSV and loads up to 1000 products into `data/products.db`.
+- Adjust `--sample` or omit it to ingest the full dataset.
+
 ## 🗺️ Development Roadmap
 
-1. **Phase 1** (Current): Data preprocessing and exploration
+1. **Phase 1** (Current): Preprocessing, EDA, SQLite ingestion
 2. **Phase 2**: Basic search and retrieval
 3. **Phase 3**: LLM integration and conversational interface
 4. **Phase 4**: Advanced features (hybrid search, guardrails)
