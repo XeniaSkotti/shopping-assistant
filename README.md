@@ -33,7 +33,7 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
 **What's working now:**
 - ✅ Data preprocessing pipeline (`DataPreprocessor`)
 - ✅ Basic project structure and dependencies
-- ✅ Jupyter notebook for data exploration
+- ✅ Exploratory data analysis (EDA)
 
 **In development:**
 - 🚧 Streamlit UI
@@ -81,6 +81,20 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
 The demo uses a fashion e-commerce dataset sourced from:
 - **Source**: [Kaggle - E-commerce Fashion Dataset](https://www.kaggle.com/code/tabassumbano/ecommerce-fashion-dataset/)
 - **Contents**: ~30,000 fashion items with attributes like brand, price, sizes, categories, and discounts
+
+**Composition (after preprocessing):**
+
+- Categories: dominated by Western Wear and Indian Wear (~20k items total), with smaller segments of Lingerie & Nightwear (~3.3k) and Footwear (~2.5k). Accessories (Watches, Jewellery, Fragrance) form ~15% of the dataset but have sparser attributes.
+
+- Price: log-normal distribution. Most clothing clusters in the £5–30 range, with a long tail of luxury/outlier items up to ~£1300.
+
+- Brands: highly skewed. A few brands (e.g. Vastranand) dominate, while the majority are long-tail labels.
+
+- Colors & product types: well populated for core clothing (dresses, kurtas, tops, sarees, etc.). Missing values are mostly in accessories.
+
+- Sizes: meaningful only for apparel and footwear; accessories/perfumes rarely list sizes.
+
+Takeaway: core clothing categories (apparel + footwear) are clean and query-friendly, while accessories are retained in the DB but flagged as non-core for early pipeline testing.
 
 *Note: This dataset is used for demonstration purposes only.*
 
