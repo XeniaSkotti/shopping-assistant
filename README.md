@@ -19,15 +19,6 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
 - **Constraint handling**
   Filters by price, brand, size, region, and sustainability flags via an LLM intent parser.
 
-- **Grounded answers with citations**
-  Every product card includes explicit attributes and source references.
-
-- **Guardrails-lite**
-  Restricted items (e.g. weapons, meds) are blocked. Numeric fields (price, rating) come directly from the catalog.
-
-- **Diagnostics tab**
-  Simple metrics dashboard: latency, recall@k, groundedness rate.
-
 ## 📍 Current Implementation
 
 **What's working now:**
@@ -43,8 +34,6 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
 
 **Planned:**
 - 📋 Hybrid search (lexical + semantic)
-- 📋 Guardrails and safety measures
-- 📋 Performance metrics and diagnostics
 
 ## 🚀 Quick Start
 
@@ -114,5 +103,4 @@ python shopping_assistant/ingest_sqlite.py --csv data/FashionDataset.csv --sampl
 1. **Phase 1** (Current): Preprocessing, EDA, SQLite ingestion
 2. **Phase 2**: Basic search and retrieval
 3. **Phase 3**: LLM integration and conversational interface
-4. **Phase 4**: Advanced features (hybrid search, guardrails)
-5. **Phase 5**: Performance optimization and metrics
+4. **Phase 4**: Advanced features (hybrid search)
