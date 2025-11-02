@@ -10,6 +10,7 @@ __author__ = "Xenia Skotti"
 __email__ = "xeniaskotti@gmail.com"
 
 # Import main components
-from .preprocessor import DataPreprocessor
+from shopping_assistant.preprocessor import DataPreprocessor
+from shopping_assistant.qa import QAAgent
 
-__all__ = ["DataPreprocessor"]
+__all__ = ["DataPreprocessor", "QAAgent"]
