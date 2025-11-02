@@ -26,11 +26,11 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
 - ✅ Basic project structure and dependencies
 - ✅ Exploratory data analysis (EDA)
 - ✅ SQLite schema + ingestion script (1k sample products loaded)
+- ✅ LLM conversational agent (without retriecal)
+- ✅ Streamlit chat UI (minimal)
 
 **In development:**
-- 🚧 Streamlit UI
 - 🚧 Vector search and retrieval system
-- 🚧 LLM integration for conversational queries
 
 **Planned:**
 - 📋 Hybrid search (lexical + semantic)
@@ -39,7 +39,11 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
 
 ### Prerequisites
 - **Python 3.11+** (tested with 3.13)
-- Git
+- **Ollama** running locally with a model (e.g., LLama3.1)
+  - Install/start:
+    - macOS: `brew install ollama` (or download from ollama.com)
+    - `ollama serve` (in a separate terminal)
+    - `ollama pull llama3.1`
 
 ### Installation
 
@@ -64,6 +68,15 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
    ```bash
    jupyter notebook notebooks/eda.ipynb
    ```
+
+### Run the chat UI
+```bash
+streamlit run streamlit_app.py
+```
+- You should see terminal logs when the calculator is used:
+  - `[tool:start] calculator | input=...`
+  - `[calculator] evaluating: ...`
+  - `[tool:end] output= ...`
 
 ## 📊 Dataset
 
@@ -101,6 +114,7 @@ python shopping_assistant/ingest_sqlite.py --csv data/FashionDataset.csv --sampl
 ## 🗺️ Development Roadmap
 
 1. **Phase 1** (Current): Preprocessing, EDA, SQLite ingestion
-2. **Phase 2**: Basic search and retrieval
-3. **Phase 3**: LLM integration and conversational interface
-4. **Phase 4**: Advanced features (hybrid search)
+2. **Phase 2**: Basic LLM agent and conversational interface
+3. **Phase 3**: Basic search and retrieval
+4. **Phase 4**: LLM Integration with database search tool
+5. **Phase 5**: Advanced features (hybrid search)
