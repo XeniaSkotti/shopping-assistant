@@ -26,7 +26,7 @@ Built in **Python 3.13** with **Streamlit** UI, this demo showcases how an LLM c
 - ✅ Basic project structure and dependencies
 - ✅ Exploratory data analysis (EDA)
 - ✅ SQLite schema + ingestion script (1k sample products loaded)
-- ✅ LLM conversational agent (without retriecal)
+- ✅ LLM conversational agent (without retrieval)
 - ✅ Streamlit chat UI (minimal)
 
 **In development:**
@@ -113,8 +113,8 @@ python shopping_assistant/ingest_sqlite.py --csv data/FashionDataset.csv --sampl
 
 ## 🗺️ Development Roadmap
 
-1. **Phase 1** (Current): Preprocessing, EDA, SQLite ingestion
+1. **Phase 1**: Preprocessing, EDA, SQLite ingestion
 2. **Phase 2**: Basic LLM agent and conversational interface
-3. **Phase 3**: Basic search and retrieval
+3. **Phase 3**(Current): Basic search and retrieval
 4. **Phase 4**: LLM Integration with database search tool
 5. **Phase 5**: Advanced features (hybrid search)
